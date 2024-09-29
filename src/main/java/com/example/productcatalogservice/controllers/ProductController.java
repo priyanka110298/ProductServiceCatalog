@@ -8,6 +8,7 @@ import com.example.productcatalogservice.models.Category;
 import com.example.productcatalogservice.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -51,8 +52,10 @@ public class ProductController {
                 return null;
             }
             return new ResponseEntity<>(fromProduct(product), HttpStatus.OK);
-        }catch(RuntimeException e){
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }catch(RuntimeException exception){
+            //return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+
+            throw exception;
         }
     }
 
@@ -102,6 +105,11 @@ public class ProductController {
 
         }
         return product;
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    private ResponseEntity<String> handleExceptions(Exception ex){
+        return new ResponseEntity<>("This will override GlobalException",HttpStatus.BAD_REQUEST);
     }
 
 }
